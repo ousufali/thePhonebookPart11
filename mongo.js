@@ -1,3 +1,4 @@
+/* eslint no-undef:0 */
 const mongoose = require('mongoose')
 
 console.log(process.argv.length)

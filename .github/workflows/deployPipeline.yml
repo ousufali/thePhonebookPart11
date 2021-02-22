@@ -4,14 +4,31 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches: [main]
+    types:  [opened , synchronize]
 
 jobs:
   checking-working:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-      - name: outputing date and ls
-        run: |
-          date
-          ls
-
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: npm install and lint
+        run : |
+          npm install
+          npm run lint
+      - name: deploy to heroku
+        if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message) , '#skip') }}
+        uses: akhileshns/heroku-deploy@v3.11.10
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "myphonebook11"
+          heroku_email: "yousaf.syed5@gmail.com"
+          healthcheck: "https://mypokemon11.herokuapp.com/health"
+          checkstring: "ok"
+          delay: 5
+          rollbackonhealthcheckfailed: true
+      

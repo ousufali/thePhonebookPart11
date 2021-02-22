@@ -11,16 +11,15 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
 
-morgan.token('sendData',req => JSON.stringify(req.body))
+morgan.token('sendData', req => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] :response-time --  :sendData'))
 
-const errorHandler = (error,req,res,next) => {
-    if(error.name === 'CastError')
-    {
-        return res.status(400).send({ error:'malformed id' })
-    }else if(error.name === 'ValidationError')
-    {
-        console.log(error.name,'   message',error.message,'\n\nenddddddddddddddddd' )
+// eslint-disable-next-line no-unused-vars
+const errorHandler = (error, req, res, next) => {
+    if (error.name === 'CastError') {
+        return res.status(400).send({ error: 'malformed id' })
+    } else if (error.name === 'ValidationError') {
+        console.log(error.name, '   message', error.message, '\n\nenddddddddddddddddd')
         res.status(400).end()//json({ error: error.message })
     }
 }
@@ -56,6 +55,10 @@ const unknownEndPoint = (req, res) => {
 //     return Math.floor(Math.random() * 1000)
 // }
 
+app.get('/health', (req, res) => {
+    res.send('ok')
+})
+
 app.get('/', (req, res) => {
     res.sendFile('index.html')
 })
@@ -68,7 +71,7 @@ app.get('/api/persons', (req, res) => {
             res.json(result)
         })
 })
-app.get('/api/persons/:id', (req, res,next) => {
+app.get('/api/persons/:id', (req, res, next) => {
     // // console.log(req.params.id)
     // let contact = persons.find((x) => x.id === Number(req.params.id))
 
@@ -101,7 +104,7 @@ app.get('/info', (req, res) => {
 
 })
 
-app.delete('/api/persons/:id', (req, res,next) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     // const id = Number(req.params.id)
     // const contact = persons.find((x) => x.id === id)
     // if (!contact) {
@@ -116,12 +119,13 @@ app.delete('/api/persons/:id', (req, res,next) => {
     // }
 
     Contact.findByIdAndDelete(req.params.id)
+        // eslint-disable-next-line no-unused-vars
         .then(result => res.status(204).end())
         .catch(error => next(error))
 
 })
 
-app.post('/api/persons', (req, res,next) => {
+app.post('/api/persons', (req, res, next) => {
 
     console.log('..................posting new contact....................')
     const body = req.body
@@ -131,7 +135,7 @@ app.post('/api/persons', (req, res,next) => {
     // }
 
 
-    const contact = new Contact ({
+    const contact = new Contact({
         name: body.name,
         number: body.number,
     })
@@ -143,19 +147,21 @@ app.post('/api/persons', (req, res,next) => {
 
 })
 
-app.put('/api/persons/:id', (req,res,next) => {
+app.put('/api/persons/:id', (req, res, next) => {
     console.log('..................put update....................')
     const contact = {
         name: req.body.name,
         number: req.body.number,
     }
-    console.log('contact :',contact)
+    console.log('contact :', contact)
 
-    Contact.findByIdAndUpdate(req.params.id,contact,{ new:true })
+    Contact.findByIdAndUpdate(req.params.id, contact, { new: true })
         .then(updatenumber => res.json(updatenumber))
         .catch(error => next(error))
 })
 
 app.use(unknownEndPoint)
+
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

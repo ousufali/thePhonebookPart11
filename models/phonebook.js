@@ -1,9 +1,11 @@
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
+// eslint-disable-next-line no-undef
 const url = process.env.MONGODB_URI
 
 mongoose.connect(url,{ useNewUrlParser:true, useUnifiedTopology: true })
+    // eslint-disable-next-line no-unused-vars
     .then((result) => console.log('connected to mongodb'))
     .catch(error => console.log('Error connecting to mongodb',error.message))
 
