@@ -3,7 +3,7 @@ name: deploy on heroku pipeline
 on:
   push:
     branches:
-      -main
+      - main
 
 jobs:
   checking-working:
